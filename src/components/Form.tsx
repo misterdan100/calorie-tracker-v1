@@ -1,13 +1,10 @@
-import { useState, ChangeEvent, FormEvent, Dispatch, useEffect } from 'react'
+import { useState, ChangeEvent, FormEvent, useEffect } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { Activity } from '../types/index.ts'
 import { categories } from '../data/categories.ts'
-import { ActivityActions, ActivityState } from '../reducers/activity-reducer.ts'
 
-type FormProps = {
-    dispatch: Dispatch<ActivityActions>,
-    state: ActivityState
-}
+import { useActivity } from '../hook/useActivity.ts'
+
 
 const initialState: Activity = {
     id: uuidv4(),
@@ -16,8 +13,9 @@ const initialState: Activity = {
     calories: 0
   }
 
-const Form = ({dispatch, state}: FormProps) => {
+const Form = () => {
 
+    const { state, dispatch} = useActivity()
     const [ activity, setActivity ] = useState<Activity>(initialState)
 
     useEffect(() => {
@@ -64,7 +62,7 @@ const Form = ({dispatch, state}: FormProps) => {
         <div className="grid grid-cols-1 gap-3">
             <label htmlFor="category" className='font-bold'>Category:</label>
             <select 
-                className="border border-slate-300 p-2 rounded-lg w-full bg-white"
+                className="w-full p-2 bg-white border rounded-lg border-slate-300"
                 id="category"
                 value={activity.category}
                 onChange={handleChange}
@@ -83,7 +81,7 @@ const Form = ({dispatch, state}: FormProps) => {
             <input 
                 id='name'
                 type="text" 
-                className='border border-slate-300 p-2 rounded-lg'
+                className='p-2 border rounded-lg border-slate-300'
                 placeholder='Ej. Food, Orange Juice, Salad, Exersice...'
                 value={activity.name}
                 onChange={handleChange}
@@ -95,7 +93,7 @@ const Form = ({dispatch, state}: FormProps) => {
             <input 
                 id='calories'
                 type="number" 
-                className='border border-slate-300 p-2 rounded-lg'
+                className='p-2 border rounded-lg border-slate-300'
                 placeholder='Ej. 250 or 500'
                 value={+activity.calories}
                 onChange={handleChange}

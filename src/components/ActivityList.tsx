@@ -1,35 +1,24 @@
-import { useMemo, Dispatch } from "react"
 import { PencilSquareIcon, XCircleIcon } from '@heroicons/react/24/outline'
-import type { Activity } from "../types"
-import type { ActivityActions } from "../reducers/activity-reducer"
-import { categories } from "../data/categories"
+import { useActivity } from "../hook/useActivity"
 
-type ActivityListProps = {
-    activities: Activity[],
-    dispatch: Dispatch<ActivityActions>
-}
-
-export default function ActivityList({activities, dispatch}: ActivityListProps) {
-
-    const categoryName = useMemo(() => (category: Activity['category']) => categories.map( cat => cat.id === category ? cat.name : ''), [activities])
-
-    const isEmptyActivities = useMemo(() => activities.length === 0, [activities])
+export default function ActivityList() {
+    const { state, dispatch, categoryName, isEmptyActivities} = useActivity()
 
   return (
     <>
-      <h2 className="text-4xl font-bold text-slate-600 text-center">
+      <h2 className="text-4xl font-bold text-center text-slate-600">
         Food and Activities
       </h2>
 
       {isEmptyActivities ? (
-        <p className="text-center my-5">There are not activities yet...</p>
+        <p className="my-5 text-center">There are not activities yet...</p>
       ) : (
-        activities?.map((activity) => (
+        state.activities?.map((activity) => (
           <div
             key={activity.id}
-            className="px-5 py-10 bg-white mt-5 flex justify-between shadow-sm hover:shadow-md transition"
+            className="flex justify-between px-5 py-10 mt-5 transition bg-white shadow-sm hover:shadow-md"
           >
-            <div className="space-y-2 relative">
+            <div className="relative space-y-2">
               <p
                 className={`absolute -top-8 -left-8 px-10 py-2 text-white uppercase rounded-lg font-bold shadow-sm ${
                   activity.category === 1 ? "bg-lime-500" : "bg-orange-500"
@@ -37,14 +26,14 @@ export default function ActivityList({activities, dispatch}: ActivityListProps) 
               >
                 {categoryName(+activity.category)}
               </p>
-              <p className="text-2xl font-bold pt-3">{activity.name}</p>
-              <p className="font-black text-4xl text-lime-500">
+              <p className="pt-3 text-2xl font-bold">{activity.name}</p>
+              <p className="text-4xl font-black text-lime-500">
                 {activity.calories}
                 <span> Calories</span>
               </p>
             </div>
 
-            <div className="flex gap-5 items-center">
+            <div className="flex items-center gap-5">
               <button
                 onClick={() => {
                   dispatch({
@@ -53,7 +42,7 @@ export default function ActivityList({activities, dispatch}: ActivityListProps) 
                   });
                 }}
               >
-                <PencilSquareIcon className="h-8 w-8 text-gray-500 hover:scale-105 hover:text-gray-700 transition" />
+                <PencilSquareIcon className="w-8 h-8 text-gray-500 transition hover:scale-105 hover:text-gray-700" />
               </button>
               <button
                 onClick={() => {
@@ -63,7 +52,7 @@ export default function ActivityList({activities, dispatch}: ActivityListProps) 
                   });
                 }}
               >
-                <XCircleIcon className="h-8 w-8 text-gray-500 hover:scale-105 hover:text-red-700 transition" />
+                <XCircleIcon className="w-8 h-8 text-gray-500 transition hover:scale-105 hover:text-red-700" />
               </button>
             </div>
           </div>
